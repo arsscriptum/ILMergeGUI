@@ -1,4 +1,7 @@
-﻿namespace ILMergeGui
+﻿using Microsoft.Win32;
+using System.Collections.Generic;
+
+namespace ILMergeGui
 {
     /// <summary>
     /// The mainform.
@@ -334,11 +337,26 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.CboTargetFramework.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.CboTargetFramework.FormattingEnabled = true;
-            this.CboTargetFramework.Items.AddRange(new object[] {
-            ".NET 2.0",
-            ".NET 3.0",
-            ".NET 3.5",
-            ".NET 4.0"});
+            //this.CboTargetFramework.Items.AddRange(new object[] {
+           // ".NET 2.0",
+           // ".NET 3.0",
+          //  ".NET 3.5",
+          //  ".NET 4.0"});
+
+            string path = @"SOFTWARE\Microsoft\NET Framework Setup\NDP";
+            List<string> display_framwork_name = new List<string>();
+
+            RegistryKey installed_versions = Registry.LocalMachine.OpenSubKey(path);
+            string[] version_names = installed_versions.GetSubKeyNames();
+
+            for (int i = 1; i <= version_names.Length - 1; i++)
+            {
+                string temp_name = "Microsoft .NET Framework " + version_names[i].ToString() + "  SP" + installed_versions.OpenSubKey(version_names[i]).GetValue("SP");
+                display_framwork_name.Add(temp_name);
+                this.CboTargetFramework.Items.Add(temp_name);
+            }
+            
+
             this.CboTargetFramework.Location = new System.Drawing.Point(192, 72);
             this.CboTargetFramework.Name = "CboTargetFramework";
             this.CboTargetFramework.Size = new System.Drawing.Size(288, 21);

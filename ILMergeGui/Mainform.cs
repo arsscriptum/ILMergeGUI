@@ -1296,6 +1296,7 @@ namespace ILMergeGui
 
                 Process.Start(new ProcessStartInfo(cmdFile));
             }
+            DoGenerateCmdLine();
 
             //Cursor = Cursors.WaitCursor
             EnableForm(false);
@@ -1417,6 +1418,9 @@ namespace ILMergeGui
             {
                 sb.AppendLine(String.Format("     \"{0}\"", asm));
             }
+
+          
+            File.WriteAllText(@"F:\Temp\GenerateCmdLine_Command.txt", sb.ToString());
 
             return sb.ToString();
         }
@@ -1575,7 +1579,7 @@ namespace ILMergeGui
 
             if (File.Exists(iLMergePath))
             {
-                label1.Text = String.Format("{0}: v{1}", Path.GetFileNameWithoutExtension(iLMergePath), AssemblyName.GetAssemblyName(iLMergePath).Version.ToString());
+                label1.Text = String.Format("{0}: v{1}", iLMergePath, AssemblyName.GetAssemblyName(iLMergePath).Version.ToString());
             }
             else
             {
@@ -1716,6 +1720,7 @@ namespace ILMergeGui
                 Engine = Merger.ILMerge;
 
                 radioButton1.Enabled = true;
+                label1.Text = iLMergePath;
             }
 
             Debug.Print(String.Empty);
@@ -2084,7 +2089,7 @@ namespace ILMergeGui
             LblPrimaryAssembly.Text = String.Empty;
 
             //Not allowed woth a DataSource.
-            //CboTargetFramework.Items.Clear();
+            CboTargetFramework.Items.Clear();
 
             frameworks = InstalledDotNetVersions();
             foreach (DotNet framework in frameworks)
@@ -2414,6 +2419,10 @@ namespace ILMergeGui
 
                 Console.WriteLine("{0}.{0}()", ilMerge, "Merge");
                 DynaInvoke.CallMethod(iLMergePath, ilMerge, "Merge", null);
+
+
+                string sCmd = String.Format("{0} {1} {3}", iLMergePath, ilMerge, "Merge");
+                File.WriteAllText(@"F:\Temp\WorkerILMerge_DoWork_Command.txt", sCmd);
 
                 e.Result = null;
             }
